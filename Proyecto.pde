@@ -1,13 +1,18 @@
-PImage cabz, cejas, ojos, iris, boca, torso, brazos, piernad, piernai;
+PImage cabz, cejas, ojos, iris, boca, torso, brazos, piernad, piernai, corazon;
 int cz_x, cz_y, cj_x, cj_y, o_x, o_y, i_x, i_y, b_x, b_y, t_x, t_y, bz_x, bz_y, pd_x, pd_y, pi_x, pi_y;
 int cz_w, cz_h, cj_w, cj_h, o_w, o_h, i_w, i_h, b_w, b_h, t_w, t_h, bz_w, bz_h, pd_w, pd_h, pi_w, pi_h;
+float cor_x, cor_y, cor_h, cor_w, cor2_x, cor2_y, cor2_h, cor2_w;
+float t=.5, brinco=-.1, corTam=.5;
 boolean animacion = false;
 int anim_t;
 
 int happy_b_w = 100;
 int happy_b_h = 35;
+int cambioAngulo=2;
+int anguloBrazo=0;
+int op=1, op2=0;
 
-void setup(){
+void setup() {
   cabz = loadImage("cabeza_vacia.png");
   cejas = loadImage("cejas.png");
   ojos = loadImage("ojos.png");
@@ -17,7 +22,8 @@ void setup(){
   brazos = loadImage("brazos.png");
   piernad = loadImage("p_derecha.png");
   piernai = loadImage("p_izquierda.png");
-  size(1000, 1000);
+  corazon = loadImage("corazon.png");
+  size(1000, 1000, P3D);
   imageMode(CENTER);
   cz_x = width/2;
   cz_y = 150;
@@ -54,19 +60,35 @@ void setup(){
   pi_y = 570;
   pi_w = 70;
   pi_h = 200;
-    println(width);
+  cor_x= (width/2)-55;
+  cor_y= 170;
+  cor_h= 11;
+  cor_w= 11;
+  cor2_x= (width/2)+55;
+  cor2_y= 170;
+  cor2_h= 11;
+  cor2_w= 11;
+
+  println(width);
   println(height);
 }
 
-void draw(){
+void draw() {
   background(255);
-  
-  if(animacion){
-    if(anim_t == 1){
+
+
+  if (animacion) {
+    if (anim_t == 1) {
       happy();
+    } else if (anim_t == 2) {
+
+
+
+      love();
+      println("Este es el valor de brinco  %f", brinco);
     }
   }
-  
+
   image(cabz, cz_x, cz_y, cz_w, cz_w);
   image(cejas, cj_x, cj_y, cj_w, cj_h);
   image(ojos, o_x, o_y, o_w, o_h);
@@ -76,34 +98,107 @@ void draw(){
   image(brazos, bz_x, bz_y, bz_w, bz_h);
   image(piernad, pd_x, pd_y, pd_w, pd_h);
   image(piernai, pi_x, pi_y, pi_w, pi_h);
-  
-}
+  if (anim_t == 2)
+  {
+    image(corazon, cor_x, cor_y, cor_w, cor_w);
+    image(corazon, cor2_x, cor2_y, cor2_w, cor2_w);
+  }
+} //Cierre de draw
 
-void happy(){
+
+void happy() {
   boolean finished = true;
-  if(b_w < happy_b_w){
+  if (b_w < happy_b_w) {
     finished = false;
     b_w = b_w +2;
     //println("activo");
   }
-  if (b_h < happy_b_h){
+  if (b_h < happy_b_h) {
     finished = false;
     b_h = b_h +1;
   }
-  
-   if (finished){
-     setup();
+
+  if (finished) {
+    setup();
     animacion = false;
   }
-}
+}//Cierre de happy
 
-void keyPressed(){
-  if(animacion){
+void love()
+{
+boolean finished = false;
+  if (cor_h<10)
+  {
+  op2=0;
+  cor_h= 11;
+  cor_w= 11;
+  cor2_h= 11;
+  cor2_w= 11;
+  }
+  else if(cor_h>99)
+  op2=1;
+  
+
+  if (cor_h>10 && op2==0 )
+  {
+    cor_h+=corTam;
+    cor_w+=corTam;
+    cor2_h+=corTam;
+    cor2_w+=corTam;
+  } else if (cor_h>=10 && op2==1)
+  {
+    cor_h-=corTam; 
+    cor_w-=corTam;
+    cor2_h-=corTam;
+    cor2_w-=corTam;
+  }
+
+    println("Esto vale cor_h", cor_h);
+     println("Esto vale op2", op2);
+
+    if (brinco<=-80)
+      op=0;
+    else if (brinco>=0)
+    {
+      op=1;
+      brinco= -.1;
+    }
+  if (brinco > -80 && op==1 )
+  {
+    brinco= brinco - .2;
+    translate(0, brinco);
+  
+  } else if (brinco<0 && op==0)
+  {
+    brinco= brinco +.2;
+    translate(0, brinco);
+  }
+  if (brinco>= 0)
+  {
+   finished = true ;
+  }
+
+
+
+  if (finished){
+   setup();
+   animacion = false;
+   }
+   
+}//Cierre de love
+
+
+void keyPressed() {
+  if (animacion) {
     return;
   }
-  if(keyCode == UP){
+  if (keyCode == UP) {
     println("Se presiono");
     animacion = true;
     anim_t = 1;
+  } else if (keyCode == DOWN) {
+    println("Se presiono ABAJO");
+    animacion = true;
+    anim_t = 2;
   }
-}
+}//Cierre de teclaPresionada
