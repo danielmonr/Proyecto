@@ -145,7 +145,7 @@ void happy() {
   image(brazod, 0, 0, bz_w, bz_h);
   rotate(-radians(angulo));
   rotate(-radians(angulo));
-  translate(-(trans*1.8), trans);
+  translate(-(trans*1.5), trans);
   image(brazoi, 0, 0, bz_w, bz_h);
   angulo = angulo -2;
   trans = trans +2;
