@@ -1,4 +1,4 @@
-PImage cabz, cejas, ojos, iris, boca, torso, brazod, brazoi ,brazos, piernad, piernai, corazon;
+PImage cabz, cejas, ojos, iris, boca, torso, brazod, brazoi ,brazos, piernad, piernai, corazon, fondoEnamorado;
 int cz_x, cz_y, cj_x, cj_y, o_x, o_y, i_x, i_y, b_x, b_y, t_x, t_y, bz_x, bz_y, pd_x, pd_y, pi_x, pi_y;
 float cz_w, cz_h, cj_w, cj_h, o_w, o_h, i_w, i_h, b_w, b_h, t_w, t_h, bz_w, bz_h, pd_w, pd_h, pi_w, pi_h;
 float cor_x, cor_y, cor_h, cor_w, cor2_x, cor2_y, cor2_h, cor2_w;
@@ -11,7 +11,7 @@ int happy_b_w = 100;
 int happy_b_h = 35;
 int cambioAngulo=2;
 int anguloBrazo=0;
-int op=1, op2=0;
+int op=1, op2=0, op3=0;
 
 void setup() {
     pushMatrix();
@@ -27,6 +27,7 @@ void setup() {
   piernad = loadImage("p_derecha.png");
   piernai = loadImage("p_izquierda.png");
   corazon = loadImage("corazon.png");
+  fondoEnamorado = loadImage("fondoEnamorado.png");
   size(1000, 1000, P3D);
   imageMode(CENTER);
   cz_x = width/2;
@@ -73,8 +74,9 @@ void setup() {
   cor2_h= 11;
   cor2_w= 11;
 
-  println(width);
+  /*println(width);
   println(height);
+  */
 }
 
 void draw() {
@@ -87,6 +89,7 @@ void draw() {
       happy();
     }
     else if (anim_t == 2) {
+      image(fondoEnamorado, 500, 400, 1000, 800);
       love();
       //println("Este es el valor de brinco  %f", brinco);
     }
@@ -99,7 +102,7 @@ void draw() {
   image(boca, b_x, b_y, b_w, b_h);
   image(torso, t_x, t_y, t_w, t_h);
   //image(brazos, bz_x, bz_y, bz_w, bz_h);
-  if(!animacion || anim_t != 1){
+  if(!animacion || (anim_t != 1  && anim_t != 2)){
     image(brazod, bz_x, bz_y, bz_w, bz_h);
     image(brazoi, bz_x, bz_y, bz_w, bz_h);
   }
@@ -189,8 +192,6 @@ boolean finished = false;
     cor2_w-=corTam;
   }
 
-    println("Esto vale cor_h", cor_h);
-     println("Esto vale op2", op2);
 
     if (brinco<=-80)
       op=0;
@@ -214,11 +215,49 @@ boolean finished = false;
    finished = true ;
   }
 
+ pushMatrix();
+ if(angulo >= 10)
+  op3=1;
+  if(angulo <= -45)
+  op3=0;
+ if (angulo <=10 && op3 == 0)
+ {
+   angulo = angulo +2;
+  trans = trans -2;
+  
+ }
+ else if (angulo <= 10 && op3 == 1)
+ {
+   angulo = angulo -2;
+  trans = trans +2;
+ 
+ }
+  
+  println("rotando: ", angulo);
+ translate(bz_x+trans , bz_y + (trans / 2));
+  rotate(radians(angulo));
+  //println("rotando");
+  image(brazod, 0, 0, bz_w, bz_h);
+  rotate(-radians(angulo));
+  rotate(-radians(angulo));
+  translate(-(trans*1.5), trans);
+  image(brazoi, 0, 0, bz_w, bz_h);
+  
+  
 
+ 
+ 
+  popMatrix();
+  
+  
 
   if (finished){
    setup();
    animacion = false;
+   anim_t = 0;
+   angulo = 10;
+   trans = 10;
+   
    }
    
 }//Cierre de love
