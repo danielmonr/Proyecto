@@ -1,4 +1,4 @@
-PImage cabz, cejas, ojos, iris, boca, torso, brazod, brazoi ,brazos, piernad, piernai, corazon, fondoEnamorado, gota, fondoTriste, fondoFeliz, charco ;
+PImage cabz, cejas, ojos, iris, boca, torso, brazod, brazoi ,brazos, piernad, piernai, corazon, fondoEnamorado, gota, fondoTriste, fondoFeliz, fondoEnojado, ojos_rojos, boca_enojado, charco ;
 int cz_x, cz_y, cj_x, cj_y, o_x, o_y, i_x, i_y, b_x, b_y, t_x, t_y, bz_x, bz_y, pd_x, pd_y, pi_x, pi_y, g_x, g_y, g_x2, g_y2, g_x3, g_y3, g_x4, g_y4, ch_x, ch_y;
 float cz_w, cz_h, cj_w, cj_h, o_w, o_h, i_w, i_h, b_w, b_h, t_w, t_h, bz_w, bz_h, pd_w, pd_h, pi_w, pi_h,  g_w, g_h, g_w2, g_h2, ch_w, ch_h;
 float cor_x, cor_y, cor_h, cor_w, cor2_x, cor2_y, cor2_h, cor2_w;
@@ -6,7 +6,6 @@ float t=.5, brinco=-.1, corTam=.5;
 int cj_happy = 130;
 boolean animacion = false;
 int anim_t;
-
 int happy_b_w = 100;
 int happy_b_h = 35;
 int tristeza_g_y = 700;
@@ -16,10 +15,13 @@ int cambioAngulo=2;
 int anguloBrazo=0;
 int op=1, op2=0, op3=0;
 int cont = 0;
-
+int s=0;
+int ojo_r_w;
+int t_en;
 
 void setup() {
     pushMatrix();
+    s = 0;
   cabz = loadImage("cabeza_vacia.png");
   cejas = loadImage("cejas.png");
   ojos = loadImage("ojos.png");
@@ -35,6 +37,9 @@ void setup() {
   fondoEnamorado = loadImage("fondoEnamorado.png");
   fondoFeliz = loadImage("fondoFeliz.jpg");
   fondoTriste = loadImage("fondoTriste.jpg");
+  fondoEnojado = loadImage("fondoEnojado.jpg");
+    boca_enojado = loadImage("boca_enojada.png");
+    ojos_rojos = loadImage("ojosRojos.png");
   gota = loadImage("gota.png");
   charco = loadImage("charco.png");
   size(1000, 1000, P3D);
@@ -98,7 +103,8 @@ void setup() {
   g_y3 = 210;
    g_x4 = (width/2)+55;
   g_y4 = 210;
-
+ojo_r_w = 200;
+t_en = 10;
   /*println(width);
   println(height);
   */
@@ -106,8 +112,6 @@ void setup() {
 
 void draw() {
   background(255);
-
-
 
   if (animacion) {
         if (anim_t == 1) {
@@ -122,14 +126,21 @@ void draw() {
     else if (anim_t == 3){
         image(fondoTriste, 500, 400, 1000, 800);
     }
+    else if (anim_t == 4){
+        image(fondoEnojado,500,400,1000,800);
+        angry();
+    }
   }
 
   image(cabz, cz_x, cz_y, cz_w, cz_w);
   image(cejas, cj_x, cj_y, cj_w, cj_h);
   image(ojos, o_x, o_y, o_w, o_h);
   image(iris, i_x, i_y, i_w, i_h);
-  if(!animacion || anim_t != 3){
+  if(!animacion || anim_t != 3 ){
     image(boca, b_x, b_y, b_w, b_h);
+  }
+  if(animacion && anim_t == 4){
+    image(boca_enojado,b_x,b_y,b_w+3,b_h+3);
   }
   image(torso, t_x, t_y, t_w, t_h);
   //image(brazos, bz_x, bz_y, bz_w, bz_h);
@@ -143,6 +154,10 @@ void draw() {
   {
     image(corazon, cor_x, cor_y, cor_w, cor_w);
     image(corazon, cor2_x, cor2_y, cor2_w, cor2_w);
+  }
+  if (anim_t == 4){
+      image(ojos_rojos, o_x,o_y,o_w,o_h);
+      image(iris, i_x, i_y, i_w, i_h);
   }
   
   if (animacion) {
@@ -290,9 +305,6 @@ boolean finished = false;
   translate(-(trans*1.5), trans);
   image(brazoi, 0, 0, bz_w, bz_h);
   
-  
-
- 
  
   popMatrix();
   
@@ -309,7 +321,72 @@ boolean finished = false;
    
 }//Cierre de love
 
-
+void angry(){
+  pushMatrix();
+  boolean finished = true;
+  
+  println(s);
+  if(s < 200){
+    s = s + 1;
+    finished = false;
+  }
+   if (cj_y > cj_happy){
+    cj_y = cj_y -2;
+    cj_w = cj_w + 1;
+  }
+  if (o_w < ojo_r_w){
+    o_w = o_w + .3;
+    o_h = o_h + .5;
+    //o_x = o_x - 1;
+    i_w = i_w + .3;
+    t_en = t_en + 5;
+   // translate(o_x,o_y+o_h/2);
+    //rotate(radians(t_en));
+    //image(ojos_rojos,b_x,b_y,b_w,b_h);
+  }
+  if (b_h < (ojo_r_w - 30)) {
+    finished = false;
+    b_h = b_h +.6;
+    image(boca_enojado,b_x,b_y,b_w,b_h);
+  }
+ 
+   pushMatrix();
+ if(angulo >= 10)
+  op3=1;
+  if(angulo <= -45)
+  op3=0;
+ if (angulo <=10 && op3 == 0)
+ {
+   angulo = angulo +2;
+  trans = trans -2;
+  
+ }
+ else if (angulo <= 10 && op3 == 1)
+ {
+   angulo = angulo -2;
+  trans = trans +2;
+ 
+ }
+  
+  println("rotando: ", angulo);
+ translate(bz_x+trans , bz_y + (trans / 2));
+  rotate(radians(angulo));
+  //println("rotando");
+  image(brazod, 0, 0, bz_w, bz_h);
+  rotate(-radians(angulo));
+  rotate(-radians(angulo));
+  translate(-(trans*1.5), trans);
+  image(brazoi, 0, 0, bz_w, bz_h);
+  
+ 
+  popMatrix();
+  if (finished) {
+    setup();
+    anim_t = 10;
+    animacion = false;
+  }
+  popMatrix();
+}
 
 void tristeza(){
   
@@ -406,5 +483,9 @@ void keyPressed() {
     else if (keyCode == LEFT){
   animacion=true;
   anim_t = 3;
+  }
+  else if (keyCode == RIGHT){
+     animacion=true;
+    anim_t =  4;
   }
 }//Cierre de teclaPresionada
